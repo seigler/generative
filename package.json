@@ -1,0 +1,24 @@
+{
+    "author": "",
+    "description": "",
+    "name": "p5-brunch",
+    "repository": "",
+    "scripts": {
+        "build": "rm -rf public/ && brunch build --production",
+        "start": "brunch watch --server"
+    },
+    "version": "1.0.0",
+    "dependencies": {
+        "p5": "^0.10.2"
+    },
+    "devDependencies": {
+        "auto-reload-brunch": "^2.7.1",
+        "babel-brunch": "^7.0.1",
+        "babel-preset-env": "^1.6.1",
+        "brunch": "^2.10.17",
+        "clean-css-brunch": "^2.10.0",
+        "copycat-brunch": "^1.1.1",
+        "digest-brunch": "^1.6.0",
+        "uglify-js-brunch": "^2.10.0"
+    }
+}
