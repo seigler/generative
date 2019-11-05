@@ -2,16 +2,17 @@ new p5(sketch => {
   sketch.disableFriendlyErrors = true;
   // reused dimensions and a seed
   let seed, width, height, maxD, goalInstances, noiseResolution, blurQuality;
+  // canvas
+  let canvas;
   // offscreen layers
   let buffer, pass1, pass2, noise;
   // shaders
   let blurH, blurV, whiteNoise;
 
   sketch.preload = () => {
-    // shaders, we will use the same vertex shader and frag shaders for both passes
-    blurH = sketch.loadShader('shaders/base.vert', 'shaders/blur-two-pass.frag');
-    blurV = sketch.loadShader('shaders/base.vert', 'shaders/blur-two-pass.frag');
-    whiteNoise = sketch.loadShader('shaders/base.vert', 'shaders/white-noise.frag');
+    blurH = sketch.loadShader('../shaders/base.vert', '../shaders/blur-two-pass.frag');
+    blurV = sketch.loadShader('../shaders/base.vert', '../shaders/blur-two-pass.frag');
+    whiteNoise = sketch.loadShader('../shaders/base.vert', '../shaders/white-noise.frag');
   }
 
   sketch.setup = () => {
@@ -31,7 +32,7 @@ new p5(sketch => {
     width = sketch.windowWidth;
     height = sketch.windowHeight;
 
-    sketch.createCanvas(width, height);
+    canvas = sketch.createCanvas(width, height);
 
     maxD = (width + height) * 1.75 / Math.sqrt(goalInstances);
 
@@ -55,12 +56,22 @@ new p5(sketch => {
     if (sketch.key == ' ') {
       seed = null;
       generate();
+    } else if (sketch.key == 's') {
+      sketch.saveCanvas('seigler-p5-1-gradient_burst-' + seed + '.jpg', 'jpg');
     }
   };
 
   sketch.doubleClicked = () => {
     seed = null;
     generate();
+  };
+
+  let resizeTimer;
+  sketch.windowResized = () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   function generate() {
@@ -155,8 +166,7 @@ new p5(sketch => {
     }
     noise.shader(whiteNoise);
     whiteNoise.setUniform('u_resolution', [width, height]);
-    whiteNoise.setUniform('u_mean', 0.5);
-    whiteNoise.setUniform('u_variation', 0.5);
+    whiteNoise.setUniform('u_alpha', 0.05);
     noise.rect(0, 0, width, height);
 
     sketch.blendMode(sketch.OVERLAY);
