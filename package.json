@@ -4,8 +4,10 @@
     "name": "p5-brunch",
     "repository": "",
     "scripts": {
+        "start": "brunch watch --server",
         "build": "rm -rf public/ && brunch build --production",
-        "start": "brunch watch --server"
+        "deploy": "npm run build && npm run push-gh-pages",
+        "push-gh-pages": "git-directory-deploy --directory public/"
     },
     "version": "1.0.0",
     "dependencies": {
@@ -19,6 +21,7 @@
         "clean-css-brunch": "^2.10.0",
         "copycat-brunch": "^1.1.1",
         "digest-brunch": "^1.6.0",
+        "git-directory-deploy": "^1.5.1",
         "uglify-js-brunch": "^2.10.0"
     }
 }

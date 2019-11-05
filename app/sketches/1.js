@@ -17,6 +17,11 @@ new p5(sketch => {
   sketch.setup = () => {
     goalInstances = 100;
 
+    window.onhashchange = () => {
+      seed = window.location.hash.substr(1);
+      generate();
+    };
+
     seed = window.location.hash.substr(1);
     sketch.noStroke();
     sketch.colorMode(sketch.HSB, 100);
@@ -36,17 +41,22 @@ new p5(sketch => {
     pass2.noStroke();
 
     generate();
-  }
+  };
 
   sketch.draw = () => {
-  }
+  };
 
   sketch.keyPressed = () => {
     if (sketch.key == ' ') {
       seed = null;
       generate();
     }
-  }
+  };
+
+  sketch.doubleClicked = () => {
+    seed = null;
+    generate();
+  };
 
   function generate() {
     if (seed) {

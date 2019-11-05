@@ -1,3 +1,3 @@
 document.addEventListener('DOMContentLoaded', function() {
-  require('sketch');
+  require('sketches/1');
 });
