@@ -1,21 +1,23 @@
 new p5(sketch => {
+  sketch.disableFriendlyErrors = true;
   // reused dimensions and a seed
-  let seed, width, height, maxD, goalInstances;
-
+  let seed, width, height, maxD, goalInstances, noiseResolution, blurQuality;
   // offscreen layers
-  let buffer, pass1, pass2;
-
+  let buffer, pass1, pass2, noise;
   // shaders
-  let blurH, blurV;
+  let blurH, blurV, whiteNoise;
 
   sketch.preload = () => {
     // shaders, we will use the same vertex shader and frag shaders for both passes
-    blurH = sketch.loadShader('shaders/blur-two-pass/base.vert', 'shaders/blur-two-pass/blur.frag');
-    blurV = sketch.loadShader('shaders/blur-two-pass/base.vert', 'shaders/blur-two-pass/blur.frag');
+    blurH = sketch.loadShader('shaders/base.vert', 'shaders/blur-two-pass.frag');
+    blurV = sketch.loadShader('shaders/base.vert', 'shaders/blur-two-pass.frag');
+    whiteNoise = sketch.loadShader('shaders/base.vert', 'shaders/white-noise.frag');
   }
 
   sketch.setup = () => {
-    goalInstances = 100;
+    noiseResolution = 2;
+    blurQuality = 2;
+    goalInstances = 70;
 
     window.onhashchange = () => {
       seed = window.location.hash.substr(1);
@@ -28,17 +30,20 @@ new p5(sketch => {
 
     width = sketch.windowWidth;
     height = sketch.windowHeight;
-    maxD = (width + height) * 1.75 / Math.sqrt(goalInstances);
 
     sketch.createCanvas(width, height);
+
+    maxD = (width + height) * 1.75 / Math.sqrt(goalInstances);
 
     buffer = sketch.createGraphics(maxD, maxD);
     pass1 = sketch.createGraphics(maxD, maxD, sketch.WEBGL);
     pass2 = sketch.createGraphics(maxD, maxD, sketch.WEBGL);
+    noise = sketch.createGraphics(width, height, sketch.WEBGL);
 
     buffer.noStroke();
     pass1.noStroke();
     pass2.noStroke();
+    noise.noStroke();
 
     generate();
   };
@@ -71,13 +76,12 @@ new p5(sketch => {
     sketch.blendMode(sketch.BLEND);
     sketch.background('#000');
     sketch.blendMode(sketch.ADD);
-    let resolution = 2;
 
     let sqpxEach = width * height / goalInstances; // square pixels per circle, helps with gridding
     let unit = Math.sqrt(sqpxEach);
     let rows = Math.max(1, Math.round(height / unit)) + 1;
     let cols = Math.max(1, Math.round(width / unit)) + 1;
-    let noiseOffset = sketch.random(0, 1000);
+    let noiseOffset = sketch.random(0, noiseResolution * 1000);
     let indices = [];
     for (let i = 0; i < rows * cols; i++) {
       indices[i] = i;
@@ -93,28 +97,28 @@ new p5(sketch => {
 
       // perlin noise "intensity"
       let intensity = sketch.noise(
-        noiseOffset + row / rows * resolution,
-        noiseOffset + col / cols * resolution
+        noiseOffset + row / rows * noiseResolution,
+        noiseOffset + col / cols * noiseResolution
       );
       let d = maxD * intensity; // diameter
       let c = sketch.color(100 * sketch.random(), 100, intensity * 90 + 10, intensity * 70 + 10); // color
       buffer.fill(c);
       buffer.circle(maxD / 2, maxD / 2, d); // always at the center of the buffer
 
-      let iterations = 2;
       let blurSize = maxD / 80;
-      for (let pass = 0; pass < iterations; pass++) {
-        let radius = (iterations - pass) * blurSize / iterations;
+      // blurQuality is number of blur iterations
+      for (let pass = 0; pass < blurQuality; pass++) {
+        let radius = (blurQuality - pass) * blurSize / blurQuality;
         pass1.shader(blurH);
         blurH.setUniform('tex0', pass == 0 ? buffer : pass2);
         blurH.setUniform('texelSize', [radius/maxD, radius/maxD]);
         blurH.setUniform('direction', [1.0, 0.0]);
-        pass1.rect(0,0,maxD, maxD);
+        pass1.rect(0, 0, maxD, maxD);
         pass2.shader(blurV);
         blurV.setUniform('tex0', pass1);
         blurV.setUniform('texelSize', [radius/maxD, radius/maxD]);
         blurV.setUniform('direction', [0.0, 1.0]);
-        pass2.rect(0,0,maxD, maxD);
+        pass2.rect(0, 0, maxD, maxD);
       }
 
       buffer.image(pass2, 0, 0, maxD, maxD);
@@ -149,6 +153,14 @@ new p5(sketch => {
 
       sketch.image(buffer, w - maxD / 2, h - maxD / 2);
     }
+    noise.shader(whiteNoise);
+    whiteNoise.setUniform('u_resolution', [width, height]);
+    whiteNoise.setUniform('u_mean', 0.5);
+    whiteNoise.setUniform('u_variation', 0.5);
+    noise.rect(0, 0, width, height);
+
+    sketch.blendMode(sketch.OVERLAY);
+    sketch.image(noise, 0, 0);
   }
 
   function shuffle(array) { // Fisher-Yates shuffle
