@@ -26,8 +26,8 @@ new p5(sketch => {
     sketch.noStroke();
     sketch.colorMode(sketch.HSB, 100);
 
-    width = document.documentElement.scrollWidth;
-    height = document.documentElement.scrollHeight;
+    width = sketch.windowWidth;
+    height = sketch.windowHeight;
     maxD = (width + height) * 1.75 / Math.sqrt(goalInstances);
 
     sketch.createCanvas(width, height);
@@ -78,10 +78,15 @@ new p5(sketch => {
     let rows = Math.max(1, Math.round(height / unit)) + 1;
     let cols = Math.max(1, Math.round(width / unit)) + 1;
     let noiseOffset = sketch.random(0, 1000);
+    let indices = [];
+    for (let i = 0; i < rows * cols; i++) {
+      indices[i] = i;
+    }
+    shuffle(indices);
     for (let i = 0; i < rows * cols; i++) {
       // calculate row and col from i
-      let col = i % cols;
-      let row = Math.floor(i / cols);
+      let col = indices[i] % cols;
+      let row = Math.floor(indices[i] / cols);
 
       buffer.noStroke();
       buffer.background('#000');
@@ -96,35 +101,36 @@ new p5(sketch => {
       buffer.fill(c);
       buffer.circle(maxD / 2, maxD / 2, d); // always at the center of the buffer
 
-      // giant, lo-fi blur
-      pass1.shader(blurH);
-      blurH.setUniform('tex0', buffer);
-      blurH.setUniform('texelSize', [8.0/maxD, 8.0/maxD]);
-      blurH.setUniform('direction', [1.0, 0.0]);
-      pass1.rect(0,0,maxD, maxD);
-      pass2.shader(blurV);
-      blurV.setUniform('tex0', pass1);
-      blurV.setUniform('texelSize', [8.0/maxD, 8.0/maxD]);
-      blurV.setUniform('direction', [0.0, 1.0]);
-      pass2.rect(0,0,maxD, maxD);
-
-      // regular blur to hide artifacts
-      pass1.shader(blurH);
-      blurH.setUniform('tex0', pass2);
-      blurH.setUniform('texelSize', [1.0/maxD, 1.0/maxD]);
-      blurH.setUniform('direction', [1.0, 0.0]);
-      pass1.rect(0,0,maxD, maxD);
-      pass2.shader(blurV);
-      blurV.setUniform('tex0', pass1);
-      blurV.setUniform('texelSize', [1.0/maxD, 1.0/maxD]);
-      blurV.setUniform('direction', [0.0, 1.0]);
-      pass2.rect(0,0,maxD, maxD);
+      let iterations = 2;
+      let blurSize = maxD / 80;
+      for (let pass = 0; pass < iterations; pass++) {
+        let radius = (iterations - pass) * blurSize / iterations;
+        pass1.shader(blurH);
+        blurH.setUniform('tex0', pass == 0 ? buffer : pass2);
+        blurH.setUniform('texelSize', [radius/maxD, radius/maxD]);
+        blurH.setUniform('direction', [1.0, 0.0]);
+        pass1.rect(0,0,maxD, maxD);
+        pass2.shader(blurV);
+        blurV.setUniform('tex0', pass1);
+        blurV.setUniform('texelSize', [radius/maxD, radius/maxD]);
+        blurV.setUniform('direction', [0.0, 1.0]);
+        pass2.rect(0,0,maxD, maxD);
+      }
 
       buffer.image(pass2, 0, 0, maxD, maxD);
 
-      buffer.fill('#000');
-      let cutoutAngle = sketch.random(2 * Math.PI);
-      buffer.circle(d * Math.cos(cutoutAngle), d * Math.sin(cutoutAngle), sketch.random(0.3, 0.5) * d);
+      if (sketch.random() > 0.5) {
+        buffer.fill('#000');
+        let cutoutAngle = sketch.random(2 * Math.PI);
+        let cutoutDiameter = sketch.random(0.1, 1.5) * d / 2;
+        let cutoutAdjustment = cutoutDiameter * sketch.random(-0.7, 0.3);
+        buffer.circle(
+          (maxD + (cutoutAdjustment + d) * Math.cos(cutoutAngle)) / 2,
+          (maxD + (cutoutAdjustment + d) * Math.sin(cutoutAngle)) / 2,
+          cutoutDiameter * 2
+        );
+      }
+
       do {
         let a1 = sketch.random(2 * Math.PI);
         let a2 = sketch.random(2 * Math.PI);
@@ -144,4 +150,16 @@ new p5(sketch => {
       sketch.image(buffer, w - maxD / 2, h - maxD / 2);
     }
   }
+
+  function shuffle(array) { // Fisher-Yates shuffle
+    var i = 0, j = 0, temp = null;
+
+    for (i = array.length - 1; i > 0; i -= 1) {
+      j = Math.floor(sketch.random() * (i + 1));
+      temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+  }
+
 });
