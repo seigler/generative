@@ -14,10 +14,6 @@ exports.modules = {
 };
 
 exports.plugins = {
-  babel: {
-    presets: ['env'],
-    ignore: /^node_modules/
-  },
   uglify: {
     ignored: /^node_modules/
   },

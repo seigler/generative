@@ -5,9 +5,9 @@
     "repository": "",
     "scripts": {
         "start": "brunch watch --server",
-        "build": "rm -rf public/ && brunch build --production",
+        "build": "rm -rf dist/ && brunch build --production",
         "deploy": "npm run build && npm run push-gh-pages",
-        "push-gh-pages": "git-directory-deploy --directory public/"
+        "push-gh-pages": "git-directory-deploy --directory dist/"
     },
     "version": "1.0.0",
     "dependencies": {
@@ -15,9 +15,8 @@
     },
     "devDependencies": {
         "auto-reload-brunch": "^2.7.1",
-        "babel-brunch": "^7.0.1",
-        "babel-preset-env": "^1.6.1",
         "brunch": "^2.10.17",
+        "buble-brunch": "^2.0.0",
         "clean-css-brunch": "^2.10.0",
         "copycat-brunch": "^1.1.1",
         "digest-brunch": "^1.6.0",
