@@ -1,9 +1,9 @@
 new p5(sketch => {
   sketch.disableFriendlyErrors = false;
   // reused dimensions and a seed
-  let seed, width, height, goalInstances, noiseResolution;
+  let seed, width, height, noiseResolution;
   // offscreen layers
-  let buffer, pass1, noise;
+  let noise;
   // shaders
   let whiteNoise;
 
@@ -15,8 +15,9 @@ new p5(sketch => {
   }
 
   sketch.setup = () => {
-    filenamePrefix = 'seigler-p5-3-untitled';
-    goalInstances = 40000;
+    filenamePrefix = 'seigler-p5-3-peanut_butter_and_jelly';
+    width = sketch.windowWidth;
+    height = sketch.windowHeight;
     noiseResolution = [2, 2, 2, 2];
 
     window.onhashchange = () => {
@@ -28,17 +29,9 @@ new p5(sketch => {
     sketch.noStroke();
     sketch.colorMode(sketch.HSL, 1);
 
-    width = sketch.windowWidth;
-    height = sketch.windowHeight;
-
     sketch.createCanvas(width, height);
 
-    // buffer = sketch.createGraphics(maxD, maxD);
-    // pass1 = sketch.createGraphics(maxD, maxD, sketch.WEBGL);
     noise = sketch.createGraphics(width, height, sketch.WEBGL);
-
-    // buffer.noStroke();
-    // pass1.noStroke();
     noise.noStroke();
 
     generate();
@@ -80,11 +73,34 @@ new p5(sketch => {
 
     sketch.noiseSeed(sketch.random(0, 1000000000));
     sketch.blendMode(sketch.BLEND);
-    sketch.background('#777');
+    sketch.background(291/360, 0.3, 0.25);
+
+    let stripeAngle = sketch.random(0, Math.PI);
+    let stripeWidth = Math.min(width, height) / sketch.random(10, 80);
+    let stripeLength = Math.max(width, height) * Math.SQRT2;
+    let numStripes = Math.ceil(Math.SQRT2 * stripeLength / stripeWidth);
+    let ox = width/2, oy = height/2;
+    let dx = Math.cos(stripeAngle) * stripeLength / 2;
+    let dy = Math.sin(stripeAngle) * stripeLength / 2;
+    sketch.strokeCap(sketch.SQUARE);
+    for (let i = Math.ceil(numStripes / 2); i > 0; i--) {
+      sketch.stroke(291/360, 0.3, 0.2 + 0.1 * (i % 2));
+      sketch.strokeWeight((i * 2 - 1) * stripeWidth);
+      sketch.line(ox - dx, oy - dy, ox + dx, oy + dy);
+    }
+
+    noise.shader(whiteNoise);
+    whiteNoise.setUniform('u_resolution', [width, height]);
+    whiteNoise.setUniform('u_alpha', 0.05);
+    noise.rect(0, 0, width, height);
+
+    sketch.blendMode(sketch.OVERLAY);
+    sketch.image(noise, 0, 0);
 
     // square pixels per circle, helps with gridding
-    let sqpxEach = width * height / goalInstances;
-    let unit = Math.sqrt(sqpxEach);
+    sketch.blendMode(sketch.BLEND);
+    sketch.strokeCap(sketch.ROUND);
+    let unit = 5;
     let rows = Math.max(1, Math.round(height / unit)) + 1;
     let cols = Math.max(1, Math.round(width / unit)) + 1;
     let noiseOffset = 1000.37;
@@ -93,12 +109,13 @@ new p5(sketch => {
       let col = index % cols;
       let row = Math.floor(index / cols);
       let noise = noiseResolution.map(
-        (resolution, noiseIndex) => (
-          sketch.noise(
-            noiseOffset * noiseIndex + row / rows * resolution,
-            noiseOffset * noiseIndex + col / cols * resolution
+        (resolution, noiseIndex) => {
+          let gridScale = resolution / Math.min(rows, cols);
+          return sketch.noise(
+            noiseOffset * noiseIndex + row * gridScale,
+            noiseOffset * noiseIndex + col * gridScale
           )
-        )
+        }
       );
       gridPoints.push({
         row,
@@ -107,18 +124,19 @@ new p5(sketch => {
       });
     }
     shuffle(gridPoints);
-    gridPoints.forEach(({row, col, noise: [n0, n1, n2, n3]}) => {
-      if (sketch.random() > 1.25 * n0 - 0.25) { return; }
+    let angleOffset = sketch.random(0, 2*Math.PI);
+    gridPoints.forEach(({row, col, noise: [n0, n1, n2, n3]}, index) => {
+      if (sketch.random() > n0 * 1.75 - 0.5) { return; }
       let x = width / (cols - 1) * col - unit / 2;
       let y = height / (rows - 1) * row - unit / 2;
-      let angle = 2 * Math.PI * n2;
-      let length = (4 * n3* n3 + 1) * unit;
+      let angle = 2 * Math.PI * flattenPerlin(n2) + angleOffset;
+      let length = (8 * n3* n3 + 1) * unit;
       sketch.stroke(
-        27/360, // hue
-        0.27, // saturation
-        0.9 * n1 + 0.1 * Math.pow(sketch.random(), 2) - 0.05 // lightness
+        27 / 360, // hue
+        0.5, // saturation
+        n1 - 0.2 * (index / gridPoints.length) + 0.1 // lightness
       );
-      sketch.strokeWeight(unit * (1 + 1 * n3 * n3));
+      sketch.strokeWeight(unit * (1 + 2 * n3 * n3 * n3));
       sketch.line(
         x - length * Math.cos(angle),
         y - length * Math.sin(angle),
@@ -126,13 +144,6 @@ new p5(sketch => {
         y + length * Math.sin(angle)
       );
     });
-    // noise.shader(whiteNoise);
-    // whiteNoise.setUniform('u_resolution', [width, height]);
-    // whiteNoise.setUniform('u_alpha', 0.05);
-    // noise.rect(0, 0, width, height);
-
-    // sketch.blendMode(sketch.OVERLAY);
-    // sketch.image(noise, 0, 0);
   }
 
   function shuffle(array) { // Fisher-Yates shuffle
@@ -144,6 +155,14 @@ new p5(sketch => {
       array[i] = array[j];
       array[j] = temp;
     }
+  }
+
+  function flattenPerlin(x) {
+    return 23.8615 * Math.pow(x, 5)
+      - 59.6041 * Math.pow(x, 4)
+      + 47.2472 * Math.pow(x, 3)
+      - 11.3053 * Math.pow(x, 2)
+      + 0.806219 * x - 0.00259101;
   }
 
 });
