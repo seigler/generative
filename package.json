@@ -5,13 +5,14 @@
     "repository": "",
     "scripts": {
         "start": "brunch watch --server",
-        "build": "rm -rf dist/ && brunch build --production",
+        "build": "rm -rf public/ && brunch build --production",
         "deploy": "npm run build && npm run push-gh-pages",
-        "push-gh-pages": "git-directory-deploy --directory dist/"
+        "push-gh-pages": "git-directory-deploy --directory public/"
     },
     "version": "1.0.0",
     "dependencies": {
-        "p5": "^0.10.2"
+        "p5": "^0.10.2",
+        "voronoi": "^1.0.0"
     },
     "devDependencies": {
         "auto-reload-brunch": "^2.7.1",

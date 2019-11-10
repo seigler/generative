@@ -18,7 +18,11 @@ exports.plugins = {
     ignored: /^node_modules/
   },
   copycat:{
-    modules: ['node_modules/p5/lib/p5.min.js', 'node_modules/p5/lib/addons/p5.sound.min.js'],
+    modules: [
+      'node_modules/p5/lib/p5.min.js',
+      'node_modules/p5/lib/addons/p5.sound.min.js',
+      'node_modules/voronoi/rhill-voronoi-core.min.js'
+    ],
     verbose : true,
     onlyChanged: true
   }

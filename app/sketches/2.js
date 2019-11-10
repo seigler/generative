@@ -1,5 +1,5 @@
 new p5(sketch => {
-  sketch.disableFriendlyErrors = false;
+  sketch.disableFriendlyErrors = true;
   // reused dimensions and a seed
   let seed, width, height, maxD, goalInstances, intensityNoiseResolution, colorNoiseResolution, blurQuality, filenamePrefix;
   // images
