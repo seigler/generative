@@ -22,7 +22,7 @@ new p5(sketch => {
     colorNoiseResolution = 6;
     blurQuality = 2;
     goalInstances = 80;
-    filenamePrefix = 'seigler-p5-2-gradient_jungle';
+    filenamePrefix = 'seigler-p5-2-gradient_jungle-';
 
     window.onhashchange = () => {
       seed = window.location.hash.substr(1);

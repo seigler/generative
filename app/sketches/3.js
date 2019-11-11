@@ -15,7 +15,7 @@ new p5(sketch => {
   }
 
   sketch.setup = () => {
-    filenamePrefix = 'seigler-p5-3-peanut_butter_and_jelly';
+    filenamePrefix = 'seigler-p5-3-peanut_butter_and_jelly-';
     width = sketch.windowWidth;
     height = sketch.windowHeight;
     noiseResolution = [2, 2, 2, 2];

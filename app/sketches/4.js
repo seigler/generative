@@ -27,7 +27,7 @@ new p5(sketch => {
   }
 
   sketch.setup = () => {
-    filenamePrefix = 'seigler-p5-3-lenses';
+    filenamePrefix = 'seigler-p5-4-lenses-';
     overdraw = 0.1;
     width = Math.floor(sketch.windowWidth * (1 + overdraw));
     height = Math.floor(sketch.windowHeight * (1 + overdraw));
