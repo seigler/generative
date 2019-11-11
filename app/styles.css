@@ -35,6 +35,11 @@ code {
   background-color: #222;
 }
 
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
 footer {
   position: fixed;
   bottom: 0;
