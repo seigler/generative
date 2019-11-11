@@ -3,7 +3,7 @@
 }
 
 html, body {
-  height: 100%;
+  min-height: 100%;
   box-sizing: border-box;
 }
 
@@ -49,4 +49,8 @@ footer {
   background-color: rgba(0, 0, 0, 0.8);
   padding: 0.5em 1em;
   border-top-right-radius: 0.5em;
+}
+
+img {
+  max-width: 100%;
 }

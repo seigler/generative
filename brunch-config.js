@@ -25,5 +25,20 @@ exports.plugins = {
     ],
     verbose : true,
     onlyChanged: true
+  },
+  static: {
+    processors: [
+      require('html-brunch-static')({
+        processors: [ ],
+        defaultContext: {
+          baseURL: 'https://seigler.github.io/generative'
+        },
+        handlebars: {
+          enableProcessor: true,
+          helpers: {},
+        },
+        minify: true
+      })
+    ]
   }
 };

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{#if title}}{{title}} -{{/if}} Generative Art - seigler.github.io</title>
+    <link rel="stylesheet" href="DIGEST(../app.css)">
+    <meta property="og:title" content="{{title}}" />
+    <meta property="og:description" content="Algorithmic art generated with P5.js. See more art in this style." />
+    <meta property="og:image" content="{{baseURL}}/{{index}}/example.jpg" />
+    <meta property="og:site_name" content="Generative Art - seigler.github.io" />
+    <meta name="twitter:creator" content="@seiglerj">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{title}}">
+    <meta name="twitter:site" content="@seiglerj">
+    <meta name="twitter:description" content="Algorithmic art generated with P5.js. See more art in this style.">
+    <meta property="og:image" content="{{baseURL}}/{{index}}/example.jpg" />
+  </head>
+  <body>
+    <script src="../modules/p5.min.js"></script>
+    <script src="../modules/rhill-voronoi-core.min.js"></script>
+    <script src="DIGEST(../app.js)"></script>
+    <footer><a href="../">Back</a> | <code>Space</code> or double click for a new one. <code>S</code> to save.</footer>
+  </body>
+</html>
