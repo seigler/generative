@@ -13,11 +13,13 @@ uniform float u_intensity;
 void main() {
 
   vec2 uv = vTexCoord;
-  // the texture is loaded upside down and backwards by default so lets flip it
-  uv = 1.0 - uv;
 
   // get the displacement map as a vec4 using texture2D
   vec4 mapTex = texture2D(u_map, uv);
+
+  // the texture is loaded upside down and backwards by default so lets flip it
+  // uv = 1.0 - uv;
+  uv[1] = 1.0 - uv[1];
 
   // lets get the average color of the rgb values
   float avg = dot(mapTex.rgb, vec3(0.33333));

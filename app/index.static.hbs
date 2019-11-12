@@ -1,0 +1,49 @@
+---
+_options:
+  partials:
+    - app/partials/preview.hbs
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Art - seigler.github.io</title>
+    <link rel="stylesheet" href="DIGEST(app.css)">
+  </head>
+  <body>
+    <main>
+      <h1>P5.js generative art</h1>
+      {{> preview
+        index="5"
+        date="2019-11-12"
+        name="glow path"
+        alt="layers of meandering dark curves with one glowing, colored curve"
+      }}
+      {{> preview
+        index="4"
+        date="2019-11-10"
+        name="lenses"
+        alt="colored pinstripes distorted by a field of smoothed lenses of varying strength"
+      }}
+      {{> preview
+        index="3"
+        date="2019-11-09"
+        name="peanut butter and jelly"
+        alt="purple jelly stripes covered with swirling swarms of peanut butter colored lines"
+      }}
+      {{> preview
+        index="2"
+        date="2019-11-07"
+        name="gradient jungle"
+        alt="multicolored gradients revealing and concealing jungle leaves"
+      }}
+      {{> preview
+        index="1"
+        date="2019-11-05"
+        name="gradient burst"
+        alt="multicolored gradients revealing and concealing bars and circles"
+      }}
+    </main>
+  </body>
+</html>
