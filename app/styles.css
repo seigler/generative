@@ -60,6 +60,11 @@ figure {
   max-width: 400px;
 }
 
+figcaption {
+  display: flex;
+  justify-content: space-between;
+}
+
 main {
   padding: 1em;
 }
