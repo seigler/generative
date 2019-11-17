@@ -1,7 +1,7 @@
 const Delaunay = require('./delaunay.js');
 
 new p5(sketch => {
-  sketch.disableFriendlyErrors = false;
+  sketch.disableFriendlyErrors = true;
   // reused dimensions and a seed
   let seed, width, height, noiseResolution, overdraw, blurQuality;
   const layers = {}; // offscreen layers
