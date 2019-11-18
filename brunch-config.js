@@ -21,7 +21,8 @@ exports.plugins = {
     modules: [
       'node_modules/p5/lib/p5.min.js',
       'node_modules/p5/lib/addons/p5.sound.min.js',
-      'node_modules/voronoi/rhill-voronoi-core.min.js'
+      'node_modules/voronoi/rhill-voronoi-core.min.js',
+      'node_modules/simplex-noise/simplex-noise.js'
     ],
     verbose : true,
     onlyChanged: true
