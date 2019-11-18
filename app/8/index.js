@@ -8,10 +8,10 @@ new p5(sketch => {
   const assets = {}; // fonts, images, sound files
 
   sketch.preload = () => {
-    shaders.whiteNoise = sketch.loadShader(
-      "../shaders/base.vert",
-      "../shaders/white-noise.frag"
-    );
+    // shaders.whiteNoise = sketch.loadShader(
+    //   "../shaders/base.vert",
+    //   "../shaders/white-noise.frag"
+    // );
     assets.stroke = sketch.loadImage("./brush-100x30.png");
   };
 
@@ -36,7 +36,7 @@ new p5(sketch => {
     layers.contours = sketch.createGraphics(width, height);
     layers.contours.colorMode(sketch.HSL, 1);
 
-    layers.noise = sketch.createGraphics(width, height, sketch.WEBGL);
+    // layers.noise = sketch.createGraphics(width, height, sketch.WEBGL);
 
     // layers.blur1 = sketch.createGraphics(width, height, sketch.WEBGL);
     // layers.blur2 = sketch.createGraphics(width, height, sketch.WEBGL);
@@ -85,17 +85,17 @@ new p5(sketch => {
 
     sketch.blendMode(sketch.BLEND);
     sketch.background(0);
-    layers.noise.shader(shaders.whiteNoise);
-    shaders.whiteNoise.setUniform("u_resolution", [width, height]);
-    shaders.whiteNoise.setUniform("u_alpha", 0.05);
-    layers.noise.rect(0, 0, width, height);
+    // layers.noise.shader(shaders.whiteNoise);
+    // shaders.whiteNoise.setUniform("u_resolution", [width, height]);
+    // shaders.whiteNoise.setUniform("u_alpha", 0.05);
+    // layers.noise.rect(0, 0, width, height);
     sketch.image(
       layers.contours,
       Math.round((-width * overdraw) / 2),
       Math.round((-height * overdraw) / 2)
     );
-    sketch.blendMode(sketch.OVERLAY);
-    sketch.image(layers.noise, 0, 0);
+    // sketch.blendMode(sketch.OVERLAY);
+    // sketch.image(layers.noise, 0, 0);
   }
 
   function drawContours(layer) {
