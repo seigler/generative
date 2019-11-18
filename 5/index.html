@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Glow Path - Generative Art - seigler.github.io</title>
-    <link rel="stylesheet" href="../app-d698f06a.css">
+    <link rel="stylesheet" href="../app-4ea0f198.css">
     <meta property="og:title" content="Glow Path">
     <meta property="og:description" content="Algorithmic art generated with P5.js. See more art in this style.">
     <meta property="og:image" content="https://seigler.github.io/generative/5/example.jpg">
@@ -20,7 +20,17 @@
     <script src="../modules/p5.min.js"></script>
     <script src="../modules/rhill-voronoi-core.min.js"></script>
     <script src="../modules/simplex-noise.js"></script>
-    <script src="../app-a3c72e86.js"></script>
+    <script src="../app-c58010f7.js"></script>
+    <header id="errors"></header>
     <footer><a href="../">Back</a> | <code>Space</code> or double click for a new one. <code>S</code> to save.</footer>
+    <script>
+      window.onerror = function(error) {
+        var text = document.createTextNode(error);
+        var box = document.createElement("div");
+        box.className = "error"
+        box.appendChild(text);
+        document.body.querySelector('#errors').appendChild(box);
+      }
+    </script>
   </body>
 </html>
