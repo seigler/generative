@@ -40,7 +40,6 @@ new p5(sketch => {
     // layers.blur1 = sketch.createGraphics(width, height, sketch.WEBGL);
     // layers.blur2 = sketch.createGraphics(width, height, sketch.WEBGL);
 
-    window.onhashchange();
     generate();
   };
 
@@ -107,6 +106,7 @@ new p5(sketch => {
     const directAngle = sketch.random() * Math.PI * 2;
 
     const drawStar = ({x, y}) => {
+      layer.noStroke();
       layer.fill(1);
       layer.circle(
         x + sketch.random(-10, 10),
