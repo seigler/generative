@@ -40,7 +40,7 @@ new p5(sketch => {
     // layers.blur1 = sketch.createGraphics(width, height, sketch.WEBGL);
     // layers.blur2 = sketch.createGraphics(width, height, sketch.WEBGL);
 
-    generate();
+    window.onhashchange();
   };
 
   sketch.draw = () => {};
